@@ -49,8 +49,8 @@ xcode-select --install
 Then:
 
 ```bash
-git clone https://github.com/VictoriousVincent1/MenuCal.git
-cd MenuCal
+git clone https://github.com/VictoriousVincent1/CalendarOnMacOSMenuBar.git
+cd CalendarOnMacOSMenuBar
 ./build.sh --install
 open /Applications/MenuCal.app
 ```
