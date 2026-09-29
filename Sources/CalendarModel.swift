@@ -75,6 +75,7 @@ final class CalendarModel: ObservableObject {
     }
 
     private var timer: Timer?
+    private var syncTimer: Timer?
 
     init() {
         showNextEventInMenuBar = UserDefaults.standard.object(forKey: "showNextEventInMenuBar") as? Bool ?? true
@@ -96,6 +97,11 @@ final class CalendarModel: ObservableObject {
                 self?.now = Date()
                 self?.loadUpcoming()
             }
+        }
+
+        // Nudge remote accounts (Google, Exchange, …) to sync more often than macOS's own schedule.
+        syncTimer = Timer.scheduledTimer(withTimeInterval: 120, repeats: true) { [weak self] _ in
+            Task { @MainActor in self?.store.refreshSourcesIfNecessary() }
         }
 
         Task { await requestAccess() }
@@ -134,6 +140,13 @@ final class CalendarModel: ObservableObject {
     }
 
     // MARK: - Loading
+
+    /// Shows what's cached now, and asks accounts to sync. Anything new arrives
+    /// via .EKEventStoreChanged, which calls reloadAll() again.
+    func refresh() {
+        store.refreshSourcesIfNecessary()
+        reloadAll()
+    }
 
     func reloadAll() {
         now = Date()

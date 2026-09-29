@@ -91,6 +91,8 @@ tccutil reset Reminders local.menucal.MenuCal
 
 **Permission prompts come back after rebuilding.** Locally built apps are ad-hoc signed, so macOS may treat each rebuild as a new app. Just allow access again.
 
+**New Google events take a few minutes to appear.** macOS syncs Google on a timer. Open the **Calendar** app → **Settings → Accounts** → your Google account → set **Refresh Calendars** to **Every 1 minute**. MenuCal also asks accounts to sync when you open the panel, click refresh, and every 2 minutes.
+
 **Launch at login doesn't stick.** Make sure the app lives in `/Applications` (use `./build.sh --install`).
 
 ## Uninstall

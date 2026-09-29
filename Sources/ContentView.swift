@@ -21,7 +21,7 @@ struct ContentView: View {
         }
         .padding(12)
         .frame(width: 320)
-        .onAppear { model.reloadAll() }
+        .onAppear { model.refresh() }
     }
 }
 
@@ -323,7 +323,7 @@ struct FooterView: View {
             .buttonStyle(.borderless)
             .help("Choose calendars")
 
-            Button { model.reloadAll() } label: { Image(systemName: "arrow.clockwise") }
+            Button { model.refresh() } label: { Image(systemName: "arrow.clockwise") }
                 .buttonStyle(.borderless)
                 .help("Refresh")
         }
