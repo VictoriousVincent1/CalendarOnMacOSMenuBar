@@ -7,6 +7,18 @@ enum AccessState {
     case unknown, granted, denied
 }
 
+enum MenuBarTimeStyle: String, CaseIterable, Identifiable {
+    case startTime, countdown
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .startTime: return "Start Time (3:00 PM)"
+        case .countdown: return "Time Until (in 25m)"
+        }
+    }
+}
+
 /// One account (iCloud, Google, Exchange, On My Mac, …) and its calendars or reminder lists.
 struct SourceGroup: Identifiable {
     let id: String
@@ -74,11 +86,17 @@ final class CalendarModel: ObservableObject {
         didSet { UserDefaults.standard.set(showNextEventInMenuBar, forKey: "showNextEventInMenuBar") }
     }
 
+    @Published var menuBarTimeStyle: MenuBarTimeStyle {
+        didSet { UserDefaults.standard.set(menuBarTimeStyle.rawValue, forKey: "menuBarTimeStyle") }
+    }
+
     private var timer: Timer?
     private var syncTimer: Timer?
 
     init() {
         showNextEventInMenuBar = UserDefaults.standard.object(forKey: "showNextEventInMenuBar") as? Bool ?? true
+        menuBarTimeStyle = UserDefaults.standard.string(forKey: "menuBarTimeStyle")
+            .flatMap(MenuBarTimeStyle.init(rawValue:)) ?? .startTime
         hiddenCalendarIDs = Set(UserDefaults.standard.stringArray(forKey: "hiddenCalendarIDs") ?? [])
 
         NotificationCenter.default.addObserver(
@@ -351,12 +369,30 @@ final class CalendarModel: ObservableObject {
         guard let next = upcomingEvents.first else { return "" }
 
         let title = next.title.map { $0.count > 24 ? String($0.prefix(23)) + "…" : $0 } ?? "Event"
+
+        if menuBarTimeStyle == .countdown {
+            if next.startDate <= now { return "Now · \(title)" }
+            return "\(countdown(to: next.startDate)) \(title)"
+        }
+
         let time = next.startDate.formatted(date: .omitted, time: .shortened)
         let day: String
         if next.startDate <= now || cal.isDateInToday(next.startDate) { day = "" }
         else if cal.isDateInTomorrow(next.startDate) { day = "Tomorrow " }
         else { day = next.startDate.formatted(.dateTime.weekday(.abbreviated)) + " " }
         return "\(day)\(time) \(title)"
+    }
+
+    /// "in 25m", "in 2h 15m", "in 1d 3h"
+    private func countdown(to date: Date) -> String {
+        let mins = max(1, Int((date.timeIntervalSince(now) / 60).rounded(.up)))
+        if mins < 60 { return "in \(mins)m" }
+        if mins < 24 * 60 {
+            let (h, m) = (mins / 60, mins % 60)
+            return m == 0 ? "in \(h)h" : "in \(h)h \(m)m"
+        }
+        let (d, h) = (mins / (24 * 60), (mins % (24 * 60)) / 60)
+        return h == 0 ? "in \(d)d" : "in \(d)d \(h)h"
     }
 
     // MARK: - Misc

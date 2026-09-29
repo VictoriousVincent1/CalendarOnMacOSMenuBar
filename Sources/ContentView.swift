@@ -300,6 +300,12 @@ struct FooterView: View {
                 Button("Choose Calendars…") { showingCalendarPicker = true }
                 Divider()
                 Toggle("Show next event in menu bar", isOn: $model.showNextEventInMenuBar)
+                Picker("Menu Bar Shows", selection: $model.menuBarTimeStyle) {
+                    ForEach(MenuBarTimeStyle.allCases) { style in
+                        Text(style.label).tag(style)
+                    }
+                }
+                .disabled(!model.showNextEventInMenuBar)
                 Toggle("Launch at login", isOn: Binding(
                     get: { model.launchAtLogin },
                     set: { model.launchAtLogin = $0 }))

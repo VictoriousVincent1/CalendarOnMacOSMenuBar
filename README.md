@@ -11,6 +11,7 @@ It reads from the same calendars and reminders as Apple's Calendar and Reminders
 ## Features
 
 - **Next event in the menu bar**: `3:00 PM Team Standup`, `Tomorrow 9:00 AM Dentist`, `Wed 10:30 AM 1:1`
+  - or as a countdown: `in 25m Team Standup`, `in 2h 15m Dentist`, `Now · 1:1`
 - **Month calendar** with dots on days that have events; click a day to see its events
 - **Events** with calendar colors, times and locations
 - **Reminders**: overdue ones in red; click the circle to complete, or type to add a new one due today
@@ -67,7 +68,7 @@ open /Applications/MenuCal.app
 - **‹ Today ›** move between months; click any day to see its events.
 - **Reminders:** click ○ to complete; type in *New reminder for today* and press Return to add one.
 - **Filter icon** (bottom right) or **⚙︎ → Choose Calendars…** picks which accounts and calendars to show.
-- **⚙︎ menu:** toggle *Show next event in menu bar* (off shows the date), *Launch at login*, open Calendar/Reminders, or quit.
+- **⚙︎ menu:** toggle *Show next event in menu bar* (off shows the date), choose *Menu Bar Shows* start time or time until, *Launch at login*, open Calendar/Reminders, or quit.
 
 ### Adding Google Calendar (or Outlook, etc.)
 
