@@ -28,16 +28,11 @@ It reads from the same calendars and reminders as Apple's Calendar and Reminders
 
 ### Option 1: Download the app
 
-1. Download `MenuCal.zip` from the [Releases](../../releases) page and unzip it.
-2. Drag **MenuCal.app** into your **Applications** folder.
-3. Open it. Because the app isn't notarized by Apple, macOS will block it the first time:
-   - **Right-click** MenuCal.app → **Open** → **Open**, **or**
-   - go to **System Settings → Privacy & Security** and click **Open Anyway**, **or**
-   - run this in Terminal:
-     ```bash
-     xattr -dr com.apple.quarantine /Applications/MenuCal.app
-     ```
-4. Click **Allow** when asked for access to Calendars and Reminders.
+**[⬇ Download MenuCal.dmg](https://github.com/VictoriousVincent1/CalendarOnMacOSMenuBar/releases/latest/download/MenuCal.dmg)** (latest version)
+
+1. Open **MenuCal.dmg** and drag **MenuCal** onto the **Applications** folder.
+2. Open MenuCal from Applications (or Spotlight). Look for the 📅 in your menu bar.
+3. Click **Allow** when asked for access to Calendars and Reminders.
 
 ### Option 2: Build from source
 
@@ -117,6 +112,7 @@ MenuCal/
 ├── MenuCal.entitlements        # App Sandbox: calendar/reminders access only
 ├── Info.plist                  # Bundle config, privacy strings, no Dock icon
 ├── build.sh                    # Builds, installs or zips the app without Xcode
+├── release.sh                  # Signed + notarized MenuCal.dmg for GitHub Releases
 └── RELEASING.md                # How to publish to the Mac App Store
 ```
 

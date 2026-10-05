@@ -35,12 +35,29 @@
 
 Then **Add for Review → Submit**. Review usually takes 1–3 days.
 
-## Direct download (outside the App Store)
+## Direct download (DMG on GitHub Releases)
 
-To share a zip without the "unverified developer" warning:
+The README's download button points to
+`https://github.com/VictoriousVincent1/CalendarOnMacOSMenuBar/releases/latest/download/MenuCal.dmg`,
+which always serves the `MenuCal.dmg` attached to the newest release.
 
-1. **Product → Archive**
-2. **Distribute App → Direct Distribution → Distribute.** Xcode signs it with your Developer ID and sends it to Apple for notarization.
-3. When it finishes, **Export** the app, zip it (`ditto -c -k --keepParent MenuCal.app MenuCal.zip`) and attach it to a GitHub Release.
+### One-time setup
+
+1. Create an **app-specific password** at [account.apple.com](https://account.apple.com) → *Sign-In and Security* → *App-Specific Passwords*.
+2. Save it for notarization in your Keychain (it prompts for the password):
+   ```bash
+   xcrun notarytool store-credentials MenuCal --apple-id <your Apple ID email> --team-id U5482T274L
+   ```
+
+### Each release
+
+1. Build, sign with Developer ID, package and notarize:
+   ```bash
+   ./release.sh
+   ```
+   The first run asks Xcode to create a **Developer ID Application** certificate for your team.
+2. On GitHub: **Releases → Draft a new release**, tag `v1.0` (matching the version), attach `build/MenuCal.dmg` (keep that exact file name), and **Publish**.
+
+Users get no "unverified developer" warning because the DMG is notarized and stapled.
 
 `./build.sh --zip` still works for quick tests, but its zip is unsigned, so users must click *Open Anyway*.
