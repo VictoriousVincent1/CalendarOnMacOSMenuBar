@@ -32,7 +32,11 @@ It reads from the same calendars and reminders as Apple's Calendar and Reminders
 
 1. Open **MenuCal.dmg** and drag **MenuCal** onto the **Applications** folder.
 2. Open MenuCal from Applications (or Spotlight). Look for the 📅 in your menu bar.
-3. Click **Allow** when asked for access to Calendars and Reminders.
+3. If macOS says it **can't verify the developer**, click **Done**, then go to **System Settings → Privacy & Security**, scroll down and click **Open Anyway**. You only need to do this once. Or run:
+   ```bash
+   xattr -dr com.apple.quarantine /Applications/MenuCal.app
+   ```
+4. Click **Allow** when asked for access to Calendars and Reminders.
 
 ### Option 2: Build from source
 

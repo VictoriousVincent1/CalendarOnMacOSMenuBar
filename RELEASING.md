@@ -60,4 +60,10 @@ which always serves the `MenuCal.dmg` attached to the newest release.
 
 Users get no "unverified developer" warning because the DMG is notarized and stapled.
 
-`./build.sh --zip` still works for quick tests, but its zip is unsigned, so users must click *Open Anyway*.
+### Without a developer account (unsigned DMG)
+
+```bash
+./build.sh --dmg
+```
+
+Attach `build/MenuCal.dmg` to a GitHub Release the same way. It works the same, but because it isn't notarized, users see "can't verify the developer" on first launch and must click **Open Anyway** in *System Settings → Privacy & Security* (the README explains this).

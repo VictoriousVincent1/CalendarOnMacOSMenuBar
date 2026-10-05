@@ -4,6 +4,7 @@
 #   ./build.sh            build only
 #   ./build.sh --install  build and copy to /Applications
 #   ./build.sh --zip      build and create build/MenuCal.zip for sharing
+#   ./build.sh --dmg      build and create build/MenuCal.dmg for sharing (unsigned; see RELEASING.md)
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -65,5 +66,14 @@ case "${1:-}" in
         rm -f build/MenuCal.zip
         ditto -c -k --keepParent "$APP" build/MenuCal.zip
         echo "Created build/MenuCal.zip"
+        ;;
+    --dmg)
+        rm -rf build/dmg build/MenuCal.dmg
+        mkdir -p build/dmg
+        cp -R "$APP" build/dmg/
+        ln -s /Applications build/dmg/Applications
+        hdiutil create -volname MenuCal -srcfolder build/dmg -ov -format UDZO -fs HFS+ build/MenuCal.dmg >/dev/null
+        rm -rf build/dmg
+        echo "Created build/MenuCal.dmg"
         ;;
 esac
