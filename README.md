@@ -62,6 +62,8 @@ open /Applications/MenuCal.app
 | `./build.sh --install` | Builds and copies it to `/Applications` |
 | `./build.sh --zip` | Builds and creates `build/MenuCal.zip` for sharing |
 
+**Or with Xcode:** open `MenuCal.xcodeproj`, pick your team under *Signing & Capabilities*, and press ⌘R. (Without Xcode, `build.sh` builds the app without its icon.)
+
 ## Usage
 
 - **Click the menu bar item** to open the panel.
@@ -86,8 +88,8 @@ MenuCal uses the accounts macOS already knows about. To add Google:
 
 **I clicked "Don't Allow" by mistake.** Enable it in the settings above, or reset the prompt and relaunch:
 ```bash
-tccutil reset Calendar local.menucal.MenuCal
-tccutil reset Reminders local.menucal.MenuCal
+tccutil reset Calendar com.vincentwu.MenuCal
+tccutil reset Reminders com.vincentwu.MenuCal
 ```
 
 **Permission prompts come back after rebuilding.** Locally built apps are ad-hoc signed, so macOS may treat each rebuild as a new app. Just allow access again.
@@ -105,16 +107,22 @@ Quit MenuCal from the ⚙︎ menu, then delete `/Applications/MenuCal.app`.
 ```
 MenuCal/
 ├── Sources/
-│   ├── MenuCalApp.swift      # App entry point + menu bar item
-│   ├── CalendarModel.swift   # EventKit access, loading, calendar selection
-│   └── ContentView.swift     # Panel UI: month grid, events, reminders, picker
-├── Info.plist                # Bundle config, privacy strings, no Dock icon
-└── build.sh                  # Builds, installs or zips the app
+│   ├── MenuCalApp.swift        # App entry point + menu bar item
+│   ├── CalendarModel.swift     # EventKit access, loading, calendar selection
+│   └── ContentView.swift       # Panel UI: month grid, events, reminders, picker
+├── Resources/
+│   ├── Assets.xcassets         # App icon
+│   └── PrivacyInfo.xcprivacy   # Privacy manifest: no tracking, no data collected
+├── MenuCal.xcodeproj           # Xcode project (App Store builds)
+├── MenuCal.entitlements        # App Sandbox: calendar/reminders access only
+├── Info.plist                  # Bundle config, privacy strings, no Dock icon
+├── build.sh                    # Builds, installs or zips the app without Xcode
+└── RELEASING.md                # How to publish to the Mac App Store
 ```
 
 ## Privacy
 
-MenuCal runs entirely on your Mac. It reads your calendars and reminders through Apple's EventKit and never sends data anywhere.
+MenuCal runs entirely on your Mac. It reads your calendars and reminders through Apple's EventKit and never sends data anywhere. It runs in Apple's App Sandbox with only calendar and reminders access, so macOS itself blocks network and file access.
 
 ## License
 
