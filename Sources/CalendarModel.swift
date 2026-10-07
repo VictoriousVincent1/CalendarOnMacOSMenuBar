@@ -90,6 +90,12 @@ final class CalendarModel: ObservableObject {
         didSet { UserDefaults.standard.set(menuBarTimeStyle.rawValue, forKey: "menuBarTimeStyle") }
     }
 
+    /// While an event is in progress, switch the menu bar to the next event this many
+    /// minutes before it starts. 0 = keep showing the current event until it ends.
+    @Published var switchToNextMinutes: Int {
+        didSet { UserDefaults.standard.set(switchToNextMinutes, forKey: "switchToNextMinutes") }
+    }
+
     private var timer: Timer?
     private var syncTimer: Timer?
 
@@ -97,6 +103,7 @@ final class CalendarModel: ObservableObject {
         showNextEventInMenuBar = UserDefaults.standard.object(forKey: "showNextEventInMenuBar") as? Bool ?? true
         menuBarTimeStyle = UserDefaults.standard.string(forKey: "menuBarTimeStyle")
             .flatMap(MenuBarTimeStyle.init(rawValue:)) ?? .startTime
+        switchToNextMinutes = UserDefaults.standard.integer(forKey: "switchToNextMinutes")
         hiddenCalendarIDs = Set(UserDefaults.standard.stringArray(forKey: "hiddenCalendarIDs") ?? [])
 
         NotificationCenter.default.addObserver(
@@ -366,7 +373,7 @@ final class CalendarModel: ObservableObject {
         guard showNextEventInMenuBar else {
             return now.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day())
         }
-        guard let next = upcomingEvents.first else { return "" }
+        guard let next = menuBarEvent else { return "" }
 
         let title = next.title.map { $0.count > 24 ? String($0.prefix(23)) + "…" : $0 } ?? "Event"
 
@@ -381,6 +388,17 @@ final class CalendarModel: ObservableObject {
         else if cal.isDateInTomorrow(next.startDate) { day = "Tomorrow " }
         else { day = next.startDate.formatted(.dateTime.weekday(.abbreviated)) + " " }
         return "\(day)\(time) \(title)"
+    }
+
+    /// The event shown in the menu bar: normally the current (or else next) event, but
+    /// the next one takes over `switchToNextMinutes` before it starts.
+    private var menuBarEvent: EKEvent? {
+        guard let first = upcomingEvents.first else { return nil }
+        guard switchToNextMinutes > 0, first.startDate <= now,
+              let next = upcomingEvents.first(where: { $0.startDate > now })
+        else { return first }
+        let lead = TimeInterval(switchToNextMinutes * 60)
+        return next.startDate.timeIntervalSince(now) <= lead ? next : first
     }
 
     /// "in 25m", "in 2h 15m", "in 1d 3h"

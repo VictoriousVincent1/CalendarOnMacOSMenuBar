@@ -306,6 +306,14 @@ struct FooterView: View {
                     }
                 }
                 .disabled(!model.showNextEventInMenuBar)
+                Picker("Switch to Next Event", selection: $model.switchToNextMinutes) {
+                    Text("When Current Event Ends").tag(0)
+                    Divider()
+                    ForEach([5, 10, 15, 30, 60], id: \.self) { mins in
+                        Text("\(mins) Minutes Before").tag(mins)
+                    }
+                }
+                .disabled(!model.showNextEventInMenuBar)
                 Toggle("Launch at login", isOn: Binding(
                     get: { model.launchAtLogin },
                     set: { model.launchAtLogin = $0 }))
